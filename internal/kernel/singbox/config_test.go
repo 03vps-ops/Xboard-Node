@@ -20,6 +20,17 @@ var testUsersPanel = []panel.User{
 
 var testUsers = model.UserSpecsFromPanel(testUsersPanel)
 
+func TestBuildInboundPreservesLandingListenAddress(t *testing.T) {
+    for _, address := range []string{"127.0.0.1", "0.0.0.0", "::1", "::", ""} {
+        nc := &panel.NodeConfig{Protocol: "vless", ListenIP: address, ServerPort: 43632, AcceptProxyProtocol: true}
+        inbound := buildInbound(testNodeSpec(nc), testUsers, kernel.TLSCert{})
+        expected := address
+        if expected == "" { expected = "::" }
+        assertMapValue(t, inbound, "listen", expected)
+        assertMapValue(t, inbound, "proxy_protocol", true)
+    }
+}
+
 func testNodeSpec(nc *panel.NodeConfig) *model.NodeSpec { return model.NodeSpecFromPanel(nc) }
 
 func testRouteRules(r []panel.RouteRule) []model.RouteRule {
