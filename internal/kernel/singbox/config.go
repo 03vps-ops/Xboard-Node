@@ -981,10 +981,10 @@ func applyMultiplex(base M, nc *model.NodeSpec) {
 }
 
 func applyProxyProtocol(base M, nc *model.NodeSpec) {
-	// if !nc.GetProxyProtocol() {
-	// 	return
-	// }
-	// base["proxy_protocol"] = true
+	if !nc.GetProxyProtocol() {
+		return
+	}
+	base["proxy_protocol"] = true
 }
 
 // extractECHInbound extracts ECH config for sing-box server (inbound).
